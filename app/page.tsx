@@ -105,9 +105,43 @@ export default function HomePage() {
             transition={{ type: 'spring', damping: 20, stiffness: 100, delay: 0.4 }}
             className="absolute inset-0 bg-white/40 backdrop-blur-xl border border-white rounded-[2rem] shadow-stripe-hover transform-3d p-8"
           >
-            <div className="w-full h-full bg-slate-50/50 rounded-xl border border-white/50 flex items-center justify-center">
-              <span className="text-slate-400 font-medium">Interactive 3D Dashboard Preview</span>
-            </div>
+              <div className="relative w-full h-full rounded-lg overflow-hidden border border-white/20 shadow-inner">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                >
+                  {/* Using a high-quality abstract 3D motion graphic placeholder from a reliable CDN */}
+                  <source src="https://cdn.dribbble.com/uploads/39417/original/49dbf46eae15d227fc95a69cee31251e.mp4?1657824906" type="video/mp4" />
+                </video>
+                
+                {/* Floating UI Elements over the video to make it look like an active dashboard */}
+                <div className="absolute inset-0 bg-gradient-to-t from-stripe-dark/60 via-transparent to-transparent" />
+                
+                <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+                  <div className="space-y-3">
+                    <div className="h-2 w-24 bg-white/50 rounded-full animate-pulse" />
+                    <div className="h-8 w-48 bg-white/90 rounded-md shadow-lg backdrop-blur-md flex items-center px-4">
+                       <Sparkles className="w-4 h-4 text-stripe-blurple mr-2" />
+                       <span className="text-sm font-bold text-stripe-dark">Revenue $+24,500</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    {[1, 2, 3].map((i) => (
+                      <div 
+                        key={i} 
+                        className={`w-8 h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center animate-bounce`}
+                        style={{ animationDelay: `${i * 200}ms` }}
+                      >
+                         <div className="w-2 h-2 bg-white rounded-full" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
           </motion.div>
         </div>
 
