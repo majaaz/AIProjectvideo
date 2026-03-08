@@ -83,13 +83,17 @@ export default function HomePage() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <button className="stripe-btn-primary flex items-center justify-center group text-lg px-8">
-              Start Shopping
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button className="stripe-btn-secondary text-lg px-8">
-              View Categories
-            </button>
+            <Link href="/search">
+              <button className="stripe-btn-primary flex items-center justify-center group text-lg px-8 w-full sm:w-auto">
+                Start Shopping
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+            <Link href="/search?category=all">
+              <button className="stripe-btn-secondary text-lg px-8 w-full sm:w-auto">
+                View Categories
+              </button>
+            </Link>
           </motion.div>
         </motion.section>
 

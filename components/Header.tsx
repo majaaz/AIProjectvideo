@@ -55,10 +55,17 @@ export function Header() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
-            {['Products', 'Solutions', 'Developers', 'Resources'].map((item) => (
-              <motion.div key={item} whileHover={{ y: -2 }} className="cursor-pointer hover:text-stripe-blurple transition-colors">
-                {item}
-              </motion.div>
+            {[
+              { name: 'All Products', href: '/search' },
+              { name: 'Electronics', href: '/search?category=electronics' },
+              { name: 'Fashion', href: '/search?category=fashion' },
+              { name: 'Deals', href: '/search?deals=true' }
+            ].map((item) => (
+              <Link key={item.name} href={item.href}>
+                <motion.div whileHover={{ y: -2 }} className="cursor-pointer hover:text-stripe-blurple transition-colors">
+                  {item.name}
+                </motion.div>
+              </Link>
             ))}
           </div>
 
