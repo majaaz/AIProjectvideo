@@ -2,32 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer base {
+  body {
+    background-color: #F6F9FC;
+    color: #425466;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    background-size: 100% 400px;
+    background-repeat: no-repeat;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
 }
 
 @layer components {
-  .amazon-btn-primary {
-    @apply bg-amazon-yellow hover:bg-amazon-yellow-hover text-gray-800 font-semibold py-2 px-4 rounded-sm shadow-sm transition-colors;
+  .stripe-btn-primary {
+    @apply bg-stripe-blurple hover:bg-stripe-purple text-white font-medium py-3 px-6 rounded-full shadow-stripe hover:shadow-stripe-hover transition-all duration-300 transform hover:-translate-y-0.5;
   }
 
-  .amazon-btn-secondary {
-    @apply bg-white hover:bg-gray-100 text-gray-800 border border-gray-400 py-2 px-4 rounded-sm shadow-sm transition-colors;
+  .stripe-btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-stripe-dark font-medium py-3 px-6 rounded-full shadow-stripe hover:shadow-stripe-hover transition-all duration-300 transform hover:-translate-y-0.5 border border-gray-100;
   }
 
-  .product-card {
-    @apply bg-white p-4 rounded-sm hover:shadow-lg transition-shadow cursor-pointer border border-gray-200;
+  .glass-nav {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm sticky top-4 mx-4 rounded-full z-50;
+  }
+
+  /* Animated background shapes */
+  .bg-shape {
+    @apply absolute rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob;
   }
 }

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Search, ShoppingCart, User, Menu } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export function Header() {
   const { itemCount } = useCart()
@@ -13,7 +14,7 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0)
+      setScrolled(window.scrollY > 20)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
@@ -27,140 +28,127 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50">
-      {/* Top bar - Amazon Blue */}
-      <div className="bg-amazon-blue text-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold italic">SHOP</span>
-            </Link>
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className={`fixed top-4 left-4 right-4 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-white/80 backdrop-blur-md shadow-stripe' : 'bg-transparent'
+      } rounded-full border border-white/20`}
+    >
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-16">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center group">
+            <motion.div 
+              whileHover={{ rotate: 5, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-10 h-10 bg-stripe-blurple rounded-xl flex items-center justify-center shadow-lg"
+            >
+              <span className="text-xl font-bold text-white tracking-tighter">S</span>
+            </motion.div>
+            <span className="ml-3 text-xl font-bold text-slate-800 tracking-tight group-hover:text-stripe-blurple transition-colors">
+              Commerce
+            </span>
+          </Link>
 
-            {/* Search bar */}
-            <form onSubmit={handleSearch} className="flex-1 max-w-2xl mx-4 hidden md:flex">
-              <div className="flex w-full">
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search Amazon"
-                    className="w-full px-4 py-2 text-gray-800 rounded-l-md focus:outline-none"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="bg-amazon-orange hover:bg-amazon-orange-hover px-6 rounded-r-md flex items-center justify-center"
-                >
-                  <Search className="w-5 h-5 text-gray-800" />
-                </button>
-              </div>
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+            {['Products', 'Solutions', 'Developers', 'Resources'].map((item) => (
+              <motion.div key={item} whileHover={{ y: -2 }} className="cursor-pointer hover:text-stripe-blurple transition-colors">
+                {item}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Right side icons */}
+          <div className="flex items-center space-x-4 md:space-x-6">
+            
+            {/* Search */}
+            <form onSubmit={handleSearch} className="hidden md:flex items-center relative group">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 group-hover:text-stripe-blurple transition-colors" />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-4 py-2 bg-slate-100/50 hover:bg-slate-100 focus:bg-white text-slate-800 rounded-full border border-transparent focus:border-stripe-blurple/30 focus:outline-none focus:ring-4 focus:ring-stripe-blurple/10 transition-all text-sm w-48 focus:w-64"
+              />
             </form>
 
-            {/* Right side icons */}
-            <div className="flex items-center space-x-4 md:space-x-6">
-              {/* Mobile menu button */}
-              <button
-                className="md:hidden p-2"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            <Link href="/auth/login" className="hidden md:block">
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
               >
-                <Menu className="w-6 h-6" />
-              </button>
+                Sign in
+              </motion.button>
+            </Link>
 
-              {/* Account */}
-              <Link href="/auth/login" className="hidden md:block group">
-                <div className="text-xs">Hello, sign in</div>
-                <div className="font-bold text-sm">Account & Lists</div>
-              </Link>
-
-              {/* Orders */}
-              <Link href="/account/orders" className="hidden md:block">
-                <div className="text-xs">Returns</div>
-                <div className="font-bold text-sm">& Orders</div>
-              </Link>
-
-              {/* Cart */}
-              <Link href="/cart" className="flex items-center relative">
-                <div className="relative">
-                  <ShoppingCart className="w-8 h-8" />
+            {/* Cart */}
+            <Link href="/cart">
+              <motion.div 
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.9 }}
+                className="relative p-2 bg-slate-100 rounded-full text-slate-600 hover:text-stripe-blurple hover:bg-stripe-blurple/10 transition-colors"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                <AnimatePresence>
                   {itemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-amazon-orange text-gray-800 font-bold rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    <motion.span 
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      className="absolute -top-1 -right-1 bg-stripe-pink text-white font-bold rounded-full w-4 h-4 flex items-center justify-center text-[10px] shadow-sm"
+                    >
                       {itemCount}
-                    </span>
+                    </motion.span>
                   )}
-                </div>
-                <span className="font-bold hidden md:block">Cart</span>
-              </Link>
-            </div>
+                </AnimatePresence>
+              </motion.div>
+            </Link>
+
+            {/* Mobile menu button */}
+            <button
+              className="md:hidden p-2 text-slate-600"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Category nav */}
-      <div className="bg-amazon-blue-light text-white text-sm">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center space-x-6 overflow-x-auto">
-          <Link href="/" className="hover:underline whitespace-nowrap flex items-center">
-            <Menu className="w-4 h-4 mr-1" />
-            All
-          </Link>
-          <Link href="/search?category=electronics" className="hover:underline whitespace-nowrap">
-            Electronics
-          </Link>
-          <Link href="/search?category=fashion" className="hover:underline whitespace-nowrap">
-            Fashion
-          </Link>
-          <Link href="/search?category=home" className="hover:underline whitespace-nowrap">
-            Home & Kitchen
-          </Link>
-          <Link href="/search?category=sports" className="hover:underline whitespace-nowrap">
-            Sports
-          </Link>
-          <Link href="/search?category=books" className="hover:underline whitespace-nowrap">
-            Books
-          </Link>
-          <Link href="/search?category=toys" className="hover:underline whitespace-nowrap">
-            Toys & Games
-          </Link>
-          <Link href="/search?category=beauty" className="hover:underline whitespace-nowrap">
-            Beauty & Health
-          </Link>
-        </div>
-      </div>
-
-      {/* Mobile search */}
-      <div className="md:hidden bg-amazon-blue px-4 py-2">
-        <form onSubmit={handleSearch} className="flex">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search Amazon"
-            className="flex-1 px-4 py-2 text-gray-800 rounded-l-md focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="bg-amazon-orange hover:bg-amazon-orange-hover px-4 rounded-r-md"
-          >
-            <Search className="w-5 h-5 text-gray-800" />
-          </button>
-        </form>
-      </div>
-
       {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-amazon-blue-light text-white p-4">
-          <Link href="/auth/login" className="block py-2 hover:underline">
-            Sign In
-          </Link>
-          <Link href="/account/orders" className="block py-2 hover:underline">
-            Orders
-          </Link>
-          <Link href="/account" className="block py-2 hover:underline">
-            Account
-          </Link>
-        </div>
-      )}
-    </header>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-t border-slate-100 overflow-hidden rounded-b-2xl shadow-xl absolute top-full left-0 right-0 mt-2"
+          >
+            <div className="p-6 space-y-4">
+              <Link href="/auth/login" className="block text-slate-700 font-medium hover:text-stripe-blurple">Sign In</Link>
+              <Link href="/cart" className="block text-slate-700 font-medium hover:text-stripe-blurple">Cart ({itemCount})</Link>
+              <div className="pt-4 border-t border-slate-100">
+                 <form onSubmit={handleSearch} className="flex items-center relative">
+                  <Search className="w-5 h-5 text-slate-400 absolute left-3" />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 text-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-stripe-blurple/20"
+                  />
+                </form>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   )
 }
