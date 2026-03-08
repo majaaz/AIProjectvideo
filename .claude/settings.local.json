@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(winget install:*)",
+      "Bash(export:*)",
+      "Bash(\"/c/Program Files/nodejs/npm\" cache:*)",
+      "Bash(\"/c/Program Files/nodejs/npm\" config:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(curl:*)",
+      "Bash(claude mcp:*)"
+    ]
+  }
+}
