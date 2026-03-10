@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { 
   ArrowLeft, 
@@ -22,7 +22,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { items, total, clearCart } = useCart()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
