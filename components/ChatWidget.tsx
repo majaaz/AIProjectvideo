@@ -22,7 +22,7 @@ interface Message {
   timestamp: Date
 }
 
-import { useChat } from 'ai/react'
+import { useChat } from '@ai-sdk/react'
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)

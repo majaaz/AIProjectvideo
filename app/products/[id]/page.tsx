@@ -159,24 +159,15 @@ export default function ProductPage({ params }: ProductPageProps) {
           </motion.div>
 
             {/* Product Info */}
-            <div>
-              <h1 className="text-2xl font-bold mb-2">{product.title}</h1>
-              <Link href="#" className="text-sm text-amazon-orange hover:underline mb-4 block">
-                Visit the Store
-              </Link>
-
-              {/* Rating */}
-              <div className="flex items-center mb-4">
-          {/* Right Side: Product Info */}
-          <div className="space-y-8 bg-white p-8 md:p-12 rounded-[2rem] border border-white shadow-sm">
-            <div>
-              <motion.h1 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-4"
-              >
-                {product.name || product.title}
-              </motion.h1>
+            <div className="space-y-8 bg-white p-8 md:p-12 rounded-[2rem] border border-white shadow-sm">
+              <div>
+                <motion.h1 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-4"
+                >
+                  {product.name || product.title}
+                </motion.h1>
               
               <div className="flex items-center space-x-4 mb-6">
                 <div className="flex items-center bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
