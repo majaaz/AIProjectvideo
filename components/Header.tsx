@@ -1,16 +1,30 @@
 'use client'
 
 import Link from 'next/link'
-import { Search, ShoppingCart, User, Menu } from 'lucide-react'
+import { Search, ShoppingCart, User, Menu, Sparkles, LogOut, LayoutDashboard } from 'lucide-react'
 import { useCart } from '@/context/CartContext'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { supabase } from '@/lib/supabase'
 
 export function Header() {
   const { itemCount } = useCart()
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [userRole, setUserRole] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!supabase) return
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data } = await supabase.from('users').select('role').eq('id', user.id).single()
+        setUserRole(data?.role || null)
+      }
+    }
+    fetchUser()
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,24 +56,24 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <motion.div 
-              whileHover={{ rotate: 5, scale: 1.05 }}
+              whileHover={{ rotate: 10, scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-10 h-10 bg-stripe-blurple rounded-xl flex items-center justify-center shadow-lg"
             >
-              <span className="text-xl font-bold text-white tracking-tighter">S</span>
+              <Sparkles className="w-6 h-6 text-white" />
             </motion.div>
-            <span className="ml-3 text-xl font-bold text-slate-800 tracking-tight group-hover:text-stripe-blurple transition-colors">
-              Commerce
+            <span className="ml-3 text-2xl font-black text-slate-900 tracking-tighter group-hover:text-stripe-blurple transition-colors">
+              NovaCart
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+          <div className="hidden md:flex items-center space-x-8 text-sm font-bold tracking-tight text-slate-500">
             {[
-              { name: 'All Products', href: '/search' },
-              { name: 'Electronics', href: '/search?category=electronics' },
-              { name: 'Fashion', href: '/search?category=fashion' },
-              { name: 'Deals', href: '/search?deals=true' }
+              { name: 'Overview', href: '/search' },
+              { name: 'Electronics', href: '/search?category=Electronics' },
+              { name: 'Fashion', href: '/search?category=Fashion' },
+              { name: 'Interior', href: '/search?category=Home' }
             ].map((item) => (
               <Link key={item.name} href={item.href}>
                 <motion.div whileHover={{ y: -2 }} className="cursor-pointer hover:text-stripe-blurple transition-colors">
@@ -84,13 +98,27 @@ export function Header() {
               />
             </form>
 
-            <Link href="/auth/login" className="hidden md:block">
+            {userRole === 'seller' && (
+              <Link href="/seller/dashboard" className="hidden md:block">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center text-sm font-bold text-stripe-blurple hover:text-stripe-pink transition-colors bg-stripe-blurple/5 px-4 py-2 rounded-full"
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-2" />
+                  Seller Dashboard
+                </motion.div>
+              </Link>
+            )}
+
+            <Link href={userRole ? '/account' : '/auth/login'} className="hidden md:block">
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors flex items-center"
               >
-                Sign in
+                <User className="w-4 h-4 mr-2" />
+                {userRole ? 'Account' : 'Sign in'}
               </motion.button>
             </Link>
 

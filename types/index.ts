@@ -21,20 +21,19 @@ export interface Category {
 
 export interface Product {
   id: string
-  title: string
+  name: string
   description: string | null
   price: number
   compare_price: number | null
-  images: string[]
-  category_id: string | null
+  category: string
   seller_id: string | null
-  stock_quantity: number
-  sku: string | null
+  image_url: string | null
+  model_url: string | null
+  stock: number
   rating: number
   review_count: number
   created_at: string
   updated_at: string
-  categories?: Category
   users?: User
 }
 

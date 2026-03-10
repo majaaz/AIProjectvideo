@@ -1,82 +1,89 @@
 'use client'
 
 import Link from 'next/link'
+import { Sparkles, Twitter, Instagram, Github, Linkedin, Mail } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 export function Footer() {
+  const currentYear = new Date().getFullYear()
+
   return (
-    <footer className="bg-amazon-blue text-white">
-      {/* Back to top button */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="w-full bg-amazon-blue-light hover:bg-[#37475A] py-4 text-center text-sm transition-colors"
-      >
-        Back to top
-      </button>
+    <footer className="bg-white border-t border-slate-100 pt-20 pb-10">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+          {/* Brand Section */}
+          <div className="space-y-6">
+            <Link href="/" className="inline-flex items-center group">
+              <motion.div 
+                whileHover={{ rotate: 10, scale: 1.1 }}
+                className="w-10 h-10 bg-stripe-blurple rounded-xl flex items-center justify-center shadow-lg"
+              >
+                <Sparkles className="w-6 h-6 text-white" />
+              </motion.div>
+              <span className="ml-3 text-2xl font-black text-slate-900 tracking-tighter">NovaCart</span>
+            </Link>
+            <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-xs">
+              Redefining the digital marketplace with immersive 3D technology and premium AI-powered support.
+            </p>
+            <div className="flex items-center space-x-4">
+               {[Twitter, Instagram, Github, Linkedin].map((Icon, i) => (
+                 <motion.a 
+                   key={i}
+                   href="#" 
+                   whileHover={{ y: -3, color: '#635bff' }}
+                   className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 transition-colors"
+                 >
+                   <Icon className="w-5 h-5" />
+                 </motion.a>
+               ))}
+            </div>
+          </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Get to Know Us */}
+          {/* Links Section 1 */}
           <div>
-            <h3 className="font-bold mb-4">Get to Know Us</h3>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/about" className="hover:underline">Careers</Link></li>
-              <li><Link href="/about" className="hover:underline">Blog</Link></li>
-              <li><Link href="/about" className="hover:underline">About Amazon</Link></li>
-              <li><Link href="/about" className="hover:underline">Investor Relations</Link></li>
-              <li><Link href="/about" className="hover:underline">Amazon Devices</Link></li>
-              <li><Link href="/about" className="hover:underline">Amazon Science</Link></li>
+            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Marketplace</h3>
+            <ul className="space-y-4">
+              <li><Link href="/search" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">All Products</Link></li>
+              <li><Link href="/search?category=Electronics" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">Electronics</Link></li>
+              <li><Link href="/search?category=Fashion" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">Fashion</Link></li>
+              <li><Link href="/search?category=Home" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">Home & Living</Link></li>
             </ul>
           </div>
 
-          {/* Make Money with Us */}
+          {/* Links Section 2 */}
           <div>
-            <h3 className="font-bold mb-4">Make Money with Us</h3>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/sell" className="hover:underline">Sell products on Amazon</Link></li>
-              <li><Link href="/sell" className="hover:underline">Sell on Amazon Business</Link></li>
-              <li><Link href="/sell" className="hover:underline">Sell apps on Amazon</Link></li>
-              <li><Link href="/affiliate" className="hover:underline">Become an Affiliate</Link></li>
-              <li><Link href="/advertise" className="hover:underline">Advertise Your Products</Link></li>
-              <li><Link href="/hosting" className="hover:underline">Host an Amazon Hub</Link></li>
+            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Business</h3>
+            <ul className="space-y-4">
+              <li><Link href="/auth/register" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">Become a Seller</Link></li>
+              <li><Link href="/seller/dashboard" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">Seller Dashboard</Link></li>
+              <li><Link href="/affiliate" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">Affiliate Program</Link></li>
+              <li><Link href="/advertise" className="text-sm font-bold text-slate-600 hover:text-stripe-blurple transition-colors">Advertise With Us</Link></li>
             </ul>
           </div>
 
-          {/* Amazon Payment Products */}
-          <div>
-            <h3 className="font-bold mb-4">Amazon Payment Products</h3>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/creditcard" className="hover:underline">Amazon Business Card</Link></li>
-              <li><Link href="/points" className="hover:underline">Shop with Points</Link></li>
-              <li><Link href="/reload" className="hover:underline">Reload Your Balance</Link></li>
-              <li><Link href="/currency" className="hover:underline">Amazon Currency Converter</Link></li>
-            </ul>
-          </div>
-
-          {/* Let Us Help You */}
-          <div>
-            <h3 className="font-bold mb-4">Let Us Help You</h3>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/help" className="hover:underline">Amazon and COVID-19</Link></li>
-              <li><Link href="/account" className="hover:underline">Your Account</Link></li>
-              <li><Link href="/orders" className="hover:underline">Your Orders</Link></li>
-              <li><Link href="/shipping" className="hover:underline">Shipping Rates & Policies</Link></li>
-              <li><Link href="/returns" className="hover:underline">Returns & Replacements</Link></li>
-              <li><Link href="/help" className="hover:underline">Help</Link></li>
-            </ul>
+          {/* Newsletter */}
+          <div className="space-y-6">
+            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Stay Updated</h3>
+            <p className="text-xs text-slate-500 font-medium">Join our newsletter for the latest premium drops and 3D features.</p>
+            <div className="relative group">
+               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-stripe-blurple transition-colors" />
+               <input 
+                 type="email" 
+                 placeholder="your@email.com" 
+                 className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-stripe-blurple/5 transition-all text-sm font-medium"
+               />
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-600 mt-10 pt-8 flex flex-col md:flex-row items-center justify-between">
-          <div className="mb-4 md:mb-0">
-            <span className="text-2xl font-bold italic">SHOP</span>
-          </div>
-          <div className="flex items-center space-x-4 text-sm text-gray-300">
-            <Link href="/conditions" className="hover:underline">Conditions of Use</Link>
-            <Link href="/privacy" className="hover:underline">Privacy Notice</Link>
-            <Link href="/ads" className="hover:underline">Interest-Based Ads</Link>
-          </div>
-          <div className="mt-4 md:mt-0 text-sm text-gray-300">
-            © 2024, Shop.com, Inc. or its affiliates
+        <div className="pt-10 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            © {currentYear} NovaCart Technologies Inc. All rights reserved.
+          </p>
+          <div className="flex items-center space-x-8">
+            <Link href="/privacy" className="text-[10px] font-bold text-slate-400 hover:text-slate-900 uppercase tracking-widest transition-colors">Privacy</Link>
+            <Link href="/terms" className="text-[10px] font-bold text-slate-400 hover:text-slate-900 uppercase tracking-widest transition-colors">Terms</Link>
+            <Link href="/cookies" className="text-[10px] font-bold text-slate-400 hover:text-slate-900 uppercase tracking-widest transition-colors">Cookies</Link>
           </div>
         </div>
       </div>

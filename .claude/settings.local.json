@@ -12,7 +12,8 @@
       "Bash(powershell.exe:*)",
       "Bash(cmd.exe:*)",
       "Bash(curl:*)",
-      "Bash(claude mcp:*)"
+      "Bash(claude mcp:*)",
+      "Bash(npx skills:*)"
     ]
   }
 }
