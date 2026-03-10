@@ -44,10 +44,10 @@ export default function CartPage() {
                 <div className="flex gap-4">
                   {/* Product Image */}
                   <div className="relative h-32 w-32 flex-shrink-0 bg-gray-100 rounded-sm">
-                    {item.products?.images && item.products.images.length > 0 ? (
+                    {item.products?.image_url ? (
                       <Image
-                        src={item.products.images[0]}
-                        alt={item.products.title}
+                        src={item.products.image_url}
+                        alt={item.products.name}
                         fill
                         className="object-contain p-2"
                       />
@@ -61,13 +61,13 @@ export default function CartPage() {
                   {/* Product Info */}
                   <div className="flex-1">
                     <Link href={`/products/${item.product_id}`} className="hover:text-amazon-orange">
-                      <h3 className="font-medium line-clamp-2 mb-1">{item.products?.title}</h3>
+                      <h3 className="font-medium line-clamp-2 mb-1">{item.products?.name}</h3>
                     </Link>
                     <p className="text-lg font-bold mb-2">
                       ${(item.products?.price || 0).toFixed(2)}
                     </p>
                     <p className="text-sm text-green-600 mb-3">
-                      {item.products?.stock_quantity && item.products.stock_quantity > 0
+                      {item.products?.stock && item.products.stock > 0
                         ? 'In Stock'
                         : 'Out of Stock'}
                     </p>

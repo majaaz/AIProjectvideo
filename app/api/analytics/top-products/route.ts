@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 export async function GET() {
   try {
     // Note: In a real setup, query the Stitch replicated data warehouse using `pg`
-    // Example: SELECT p.title, SUM(oi.quantity) as sales FROM order_items oi JOIN products p ...
+    // Example: SELECT p.name, SUM(oi.quantity) as sales FROM order_items oi JOIN products p ...
     
     // Fallback mock data for the dashboard
     const topProducts = [

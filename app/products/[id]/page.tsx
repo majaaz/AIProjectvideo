@@ -144,17 +144,16 @@ export default function ProductPage({ params }: ProductPageProps) {
             />
             
             <div className="grid grid-cols-4 gap-4">
-              {product.images?.map((image, index) => (
+              {product.image_url && (
                 <button
-                  key={index}
-                  onClick={() => setSelectedImage(index)}
+                  onClick={() => setSelectedImage(0)}
                   className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all ${
-                    selectedImage === index ? 'border-stripe-blurple ring-4 ring-stripe-blurple/10' : 'border-transparent bg-white shadow-sm hover:shadow-md'
+                    selectedImage === 0 ? 'border-stripe-blurple ring-4 ring-stripe-blurple/10' : 'border-transparent bg-white shadow-sm hover:shadow-md'
                   }`}
                 >
-                  <Image src={image} alt="" fill className="object-cover" />
+                  <Image src={product.image_url} alt="" fill className="object-cover" />
                 </button>
-              ))}
+              )}
             </div>
           </motion.div>
 
@@ -193,10 +192,10 @@ export default function ProductPage({ params }: ProductPageProps) {
             <div className="space-y-6 pt-8 border-t border-slate-50">
                {/* Stock & Status */}
                <div className="flex items-center space-x-3">
-                  <div className={`w-3 h-3 rounded-full ${product.stock_quantity > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
-                  <span className="text-sm font-bold text-slate-700 uppercase tracking-widest">
-                    {product.stock_quantity > 0 ? `In Stock (${product.stock_quantity} available)` : 'Out of Stock'}
-                  </span>
+                <div className={`w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+                <span className="text-sm font-bold text-slate-700 uppercase tracking-widest">
+                  {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+                </span>
                </div>
 
                {/* Quantity Selector */}
@@ -209,7 +208,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                     >-</button>
                     <span className="w-12 text-center font-bold text-slate-900">{quantity}</span>
                     <button 
-                      onClick={() => setQuantity(Math.min(product.stock_quantity, quantity + 1))}
+                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                       className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white transition-colors text-slate-600 font-bold"
                     >+</button>
                   </div>
@@ -219,7 +218,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
                <button
                  onClick={handleAddToCart}
-                 disabled={product.stock_quantity <= 0}
+                 disabled={product.stock <= 0}
                  className="stripe-btn-primary py-4 px-8 text-lg flex-1 flex items-center justify-center group"
                >
                  Add to Bag

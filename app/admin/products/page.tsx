@@ -7,19 +7,19 @@ import { Plus, Search, Edit, Trash2, Filter } from 'lucide-react'
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([
-    { id: '1', title: 'Wireless Headphones', price: 199.99, stock: 50, category: 'Electronics', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100' },
-    { id: '2', title: 'Smart Watch Pro', price: 349.99, stock: 30, category: 'Electronics', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100' },
-    { id: '3', title: 'Bluetooth Speaker', price: 79.99, stock: 100, category: 'Electronics', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=100' },
-    { id: '4', title: '4K Smart TV 55"', price: 599.99, stock: 15, category: 'Electronics', image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=100' },
-    { id: '5', title: 'Gaming Mouse', price: 69.99, stock: 75, category: 'Electronics', image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=100' },
-    { id: '6', title: 'Mechanical Keyboard', price: 129.99, stock: 40, category: 'Electronics', image: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=100' },
+    { id: '1', name: 'Wireless Headphones', price: 199.99, stock: 50, category: 'Electronics', image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100' },
+    { id: '2', name: 'Smart Watch Pro', price: 349.99, stock: 30, category: 'Electronics', image_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100' },
+    { id: '3', name: 'Bluetooth Speaker', price: 79.99, stock: 100, category: 'Electronics', image_url: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=100' },
+    { id: '4', name: '4K Smart TV 55"', price: 599.99, stock: 15, category: 'Electronics', image_url: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=100' },
+    { id: '5', name: 'Gaming Mouse', price: 69.99, stock: 75, category: 'Electronics', image_url: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=100' },
+    { id: '6', name: 'Mechanical Keyboard', price: 129.99, stock: 40, category: 'Electronics', image_url: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=100' },
   ])
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filterCategory, setFilterCategory] = useState('')
 
   const filteredProducts = products.filter(p => {
-    if (searchQuery && !p.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
+    if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false
     if (filterCategory && p.category !== filterCategory) return false
     return true
   })
@@ -82,14 +82,14 @@ export default function AdminProductsPage() {
                     <div className="flex items-center gap-3">
                       <div className="relative h-12 w-12 bg-gray-100 rounded-sm overflow-hidden flex-shrink-0">
                         <Image
-                          src={product.image}
-                          alt={product.title}
+                          src={product.image_url}
+                          alt={product.name}
                           fill
                           className="object-contain"
                         />
                       </div>
                       <div>
-                        <p className="font-medium">{product.title}</p>
+                        <p className="font-medium">{product.name}</p>
                         <p className="text-sm text-gray-500">SKU: PRD-{product.id}</p>
                       </div>
                     </div>
