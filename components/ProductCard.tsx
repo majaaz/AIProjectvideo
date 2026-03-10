@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Plus, ShoppingBag, Star } from 'lucide-react'
+import { Product } from '@/types'
 
 export function ProductCard({ product }: { product: Product }) {
   return (
@@ -48,11 +50,11 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="mt-auto pt-4 flex items-center justify-between">
             <div className="flex flex-col">
               <span className="text-xl font-bold text-slate-900">
-                ${Number(product.price).toFixed(2)}
+                ₹{Number(product.price).toFixed(2)}
               </span>
               {product.compare_price && (
                 <span className="text-xs text-slate-300 line-through">
-                  ${Number(product.compare_price).toFixed(2)}
+                  ₹{Number(product.compare_price).toFixed(2)}
                 </span>
               )}
             </div>
@@ -68,7 +70,6 @@ export function ProductCard({ product }: { product: Product }) {
   )
 }
 
-// Keeping empty exports for components that were imported in the main page.tsx
 export function HeroCarousel() { return null }
 export function CategoryGrid() { return null }
 export function DealsOfTheDay() { return null }

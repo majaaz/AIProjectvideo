@@ -9,7 +9,9 @@ import {
   ArrowUpRight, 
   ArrowDownRight,
   MoreHorizontal,
-  Plus
+  Plus,
+  ShoppingBag,
+  Sparkles
 } from 'lucide-react'
 import { 
   LineChart, 

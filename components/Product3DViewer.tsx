@@ -61,7 +61,7 @@ export function Product3DViewer({ modelUrl, fallbackColor }: Product3DViewerProp
             polar={[-Math.PI / 3, Math.PI / 3]}
             azimuth={[-Math.PI / 1.4, Math.PI / 1.4]}
           >
-            <Stage environment="city" intensity={0.6} contactShadow={false}>
+            <Stage environment="city" intensity={0.6}>
               <ProductMesh fallbackColor={fallbackColor} />
             </Stage>
           </PresentationControls>

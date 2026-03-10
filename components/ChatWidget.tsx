@@ -7,36 +7,32 @@ import {
   X, 
   Send, 
   Sparkles, 
-  User, 
-  Bot,
   Minimize2,
   Maximize2,
-  MoreHorizontal,
   HeadphonesIcon
 } from 'lucide-react'
 
-interface Message {
-  id: string
-  text: string
-  sender: 'user' | 'ai'
-  timestamp: Date
-}
-
 import { useChat } from '@ai-sdk/react'
+
+// Helper: extract text from a UIMessage (new ai-sdk v3/v4 parts-based format)
+function getMessageText(msg: { parts?: Array<{ type: string; text?: string }>; role?: string }): string {
+  if (Array.isArray(msg.parts)) {
+    return msg.parts
+      .filter((p) => p.type === 'text')
+      .map((p) => p.text ?? '')
+      .join('')
+  }
+  return ''
+}
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat',
-    initialMessages: [
-      {
-        id: 'welcome',
-        content: 'Hi there! I\'m Nova, your AI shopping assistant. How can I help you today?',
-        role: 'assistant'
-      }
-    ]
-  })
+  const [inputValue, setInputValue] = useState('')
+
+  const { messages, sendMessage, status } = useChat()
+
+  const isStreaming = status === 'streaming' || status === 'submitted'
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -46,6 +42,22 @@ export function ChatWidget() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const text = inputValue.trim()
+    if (!text) return
+    setInputValue('')
+    await sendMessage({ role: 'user', parts: [{ type: 'text', text }] })
+  }
+
+  // Combine a static welcome message with actual chat messages
+  const welcomeMessage = {
+    id: 'welcome',
+    role: 'assistant' as const,
+    parts: [{ type: 'text', text: "Hi there! I'm Nova, your AI shopping assistant. How can I help you today?" }],
+  }
+  const allMessages = messages.length > 0 ? messages : []
 
   return (
     <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end">
@@ -98,7 +110,19 @@ export function ChatWidget() {
               <>
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
-                  {messages.map((msg) => (
+                  {/* Static welcome message */}
+                  <motion.div
+                    key="welcome"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex justify-start"
+                  >
+                    <div className="max-w-[80%] p-4 rounded-3xl rounded-bl-none text-sm font-medium tracking-tight shadow-sm bg-white border border-slate-50 text-slate-700 px-6">
+                      {welcomeMessage.parts[0].text}
+                    </div>
+                  </motion.div>
+
+                  {allMessages.map((msg) => (
                     <motion.div
                       key={msg.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -110,11 +134,11 @@ export function ChatWidget() {
                           ? 'bg-slate-900 text-white rounded-br-none px-6' 
                           : 'bg-white border border-slate-50 text-slate-700 rounded-bl-none px-6'
                       }`}>
-                        {msg.content}
+                        {getMessageText(msg as Parameters<typeof getMessageText>[0])}
                       </div>
                     </motion.div>
                   ))}
-                  {isLoading && (
+                  {isStreaming && (
                     <div className="flex justify-start">
                       <div className="bg-white border border-slate-50 p-4 rounded-3xl rounded-bl-none">
                         <div className="flex space-x-1">
@@ -132,8 +156,8 @@ export function ChatWidget() {
                 <div className="p-6 border-t border-white bg-white/20">
                    <form onSubmit={handleSubmit} className="relative group">
                      <input 
-                       value={input}
-                       onChange={handleInputChange}
+                       value={inputValue}
+                       onChange={(e) => setInputValue(e.target.value)}
                        placeholder="Ask about orders, products..."
                        className="w-full pl-6 pr-14 py-4 bg-white/50 border border-white rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-stripe-blurple/5 transition-all text-sm font-medium text-slate-600"
                      />

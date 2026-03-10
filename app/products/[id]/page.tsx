@@ -5,7 +5,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
 import { Product, Review } from '@/types'
-import { Star, Truck, Shield, ArrowLeft, Heart, ChevronRight } from 'lucide-react'
+import { Star, Truck, Shield, ArrowLeft, Heart, ChevronRight, ShoppingBag, Package } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { supabase } from '@/lib/supabase'
+import { Product3DViewer } from '@/components/Product3DViewer'
 
 interface ProductPageProps {
   params: Promise<{ id: string }>
@@ -15,6 +18,11 @@ export default function ProductPage({ params }: ProductPageProps) {
   const resolvedParams = use(params)
   const { addItem } = useCart()
 
+  const [product, setProduct] = useState<Product | null>(null)
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [loading, setLoading] = useState(true)
+  const [quantity, setQuantity] = useState(1)
+  const [selectedImage, setSelectedImage] = useState(0)
   const [mouseX, setMouseX] = useState(0)
   const [mouseY, setMouseY] = useState(0)
 
@@ -26,6 +34,11 @@ export default function ProductPage({ params }: ProductPageProps) {
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
+
+  useEffect(() => {
+    fetchProduct()
+    fetchReviews()
+  }, [resolvedParams.id])
 
   const fetchProduct = async () => {
     setLoading(true)
@@ -46,17 +59,15 @@ export default function ProductPage({ params }: ProductPageProps) {
     // Fallback Mock product data
     const mockProduct: Product = {
       id: resolvedParams.id,
-      title: 'Wireless Noise-Canceling Headphones',
+      name: 'Wireless Noise-Canceling Headphones',
       description: 'Experience immersive audio with our premium wireless headphones. Featuring advanced active noise cancellation and premium comfort for all-day listening.',
       price: 199.99,
       compare_price: 249.99,
-      images: [
-        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800',
-      ],
-      category_id: '1',
+      image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800',
+      category: 'Electronics',
       seller_id: '1',
-      stock_quantity: 50,
-      sku: 'WH-1000XM4',
+      stock: 50,
+      model_url: null,
       rating: 4.5,
       review_count: 1234,
       created_at: new Date().toISOString(),
@@ -70,9 +81,14 @@ export default function ProductPage({ params }: ProductPageProps) {
   const fetchReviews = async () => {
     if (supabase) {
        const { data } = await supabase
-         .from('messages') // Assuming reviews might be in a different table or messages
-         .select('*')
-         .eq('conversation_id', resolvedParams.id) // This is just a placeholder logic check
+         .from('reviews') 
+         .select('*, users(*)')
+         .eq('product_id', resolvedParams.id)
+       
+       if (data) {
+         setReviews(data as Review[])
+         return
+       }
     }
 
     // Mock reviews
@@ -86,6 +102,15 @@ export default function ProductPage({ params }: ProductPageProps) {
         created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
         users: { id: '1', email: 'user1@example.com', full_name: 'John D.', avatar_url: null, role: 'customer', created_at: '' },
       },
+      {
+        id: '2',
+        product_id: resolvedParams.id,
+        user_id: '2',
+        rating: 4,
+        comment: 'Very comfortable for long hours. Highly recommended.',
+        created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+        users: { id: '2', email: 'user2@example.com', full_name: 'Sarah M.', avatar_url: null, role: 'customer', created_at: '' },
+      }
     ]
     setReviews(mockReviews)
   }
@@ -129,7 +154,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           <ChevronRight className="w-4 h-4 mx-2" />
           <Link href="/search" className="hover:text-stripe-blurple transition-colors">Products</Link>
           <ChevronRight className="w-4 h-4 mx-2" />
-          <span className="text-slate-900 font-medium">{product.name || product.title}</span>
+          <span className="text-slate-900 font-medium">{product.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -139,7 +164,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             className="space-y-6"
           >
             <Product3DViewer 
-              modelUrl={product.model_url} 
+              modelUrl={product.model_url || undefined} 
               fallbackColor="#635bff" 
             />
             
@@ -151,22 +176,22 @@ export default function ProductPage({ params }: ProductPageProps) {
                     selectedImage === 0 ? 'border-stripe-blurple ring-4 ring-stripe-blurple/10' : 'border-transparent bg-white shadow-sm hover:shadow-md'
                   }`}
                 >
-                  <Image src={product.image_url} alt="" fill className="object-cover" />
+                  <Image src={product.image_url} alt={product.name} fill className="object-cover" />
                 </button>
               )}
             </div>
           </motion.div>
 
-            {/* Product Info */}
-            <div className="space-y-8 bg-white p-8 md:p-12 rounded-[2rem] border border-white shadow-sm">
-              <div>
-                <motion.h1 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-4"
-                >
-                  {product.name || product.title}
-                </motion.h1>
+          {/* Right Side: Product Info */}
+          <div className="space-y-8 bg-white p-8 md:p-12 rounded-[2rem] border border-white shadow-sm">
+            <div>
+              <motion.h1 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-4"
+              >
+                {product.name}
+              </motion.h1>
               
               <div className="flex items-center space-x-4 mb-6">
                 <div className="flex items-center bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
@@ -174,13 +199,13 @@ export default function ProductPage({ params }: ProductPageProps) {
                   <span className="text-sm font-bold text-slate-700">{product.rating}</span>
                   <span className="text-sm text-slate-400 ml-1">({product.review_count})</span>
                 </div>
-                <div className="text-sm text-slate-400 font-medium tracking-wide uppercase">SKU: {product.sku}</div>
+                <div className="text-sm text-slate-400 font-medium tracking-wide uppercase">Category: {product.category}</div>
               </div>
 
               <div className="flex items-baseline space-x-3">
-                <span className="text-4xl font-bold text-slate-900">${product.price.toFixed(2)}</span>
+                <span className="text-4xl font-bold text-slate-900">₹{product.price.toFixed(2)}</span>
                 {product.compare_price && (
-                  <span className="text-xl text-slate-300 line-through">${product.compare_price.toFixed(2)}</span>
+                  <span className="text-xl text-slate-300 line-through">₹{product.compare_price.toFixed(2)}</span>
                 )}
               </div>
             </div>
@@ -192,10 +217,10 @@ export default function ProductPage({ params }: ProductPageProps) {
             <div className="space-y-6 pt-8 border-t border-slate-50">
                {/* Stock & Status */}
                <div className="flex items-center space-x-3">
-                <div className={`w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
-                <span className="text-sm font-bold text-slate-700 uppercase tracking-widest">
-                  {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
-                </span>
+                  <div className={`w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+                  <span className="text-sm font-bold text-slate-700 uppercase tracking-widest">
+                    {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+                  </span>
                </div>
 
                {/* Quantity Selector */}
@@ -268,7 +293,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                     </div>
                     <div>
                       <div className="text-sm font-bold text-slate-900">{review.users?.full_name}</div>
-                      <div className="text-xs text-slate-400">{new Date(review.created_at).toLocaleDateString()}</div>
+                      <div className="text-xs text-slate-400">{review.created_at ? new Date(review.created_at).toLocaleDateString() : ''}</div>
                     </div>
                   </div>
                   <div className="flex text-amber-400">
@@ -283,7 +308,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
         {/* Relevant Products */}
         <section className="mt-24">
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-12 text-center underline decoration-stripe-blurple/30 transition-transform cursor-pointer">You might also like</h2>
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-12 text-center">You might also like</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="group cursor-pointer">
@@ -294,7 +319,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   </div>
                 </div>
                 <h3 className="font-bold text-slate-800 tracking-tight group-hover:text-stripe-blurple transition-colors">Premium Lifestyle Series {i}</h3>
-                <p className="text-slate-500 font-medium">${(149 + i * 50).toFixed(2)}</p>
+                <p className="text-slate-500 font-medium">₹{(149 + i * 50).toFixed(2)}</p>
               </div>
             ))}
           </div>
